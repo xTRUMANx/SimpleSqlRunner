@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Title>Simple SQL Runner</Title>
+    <Authors>Mustafa Saeed Haji Ali</Authors>
+    <Description>Opens a connection and returns result sets.</Description>
+    <PackageProjectUrl>https://github.com/xTRUMANx/SimpleSqlRunner</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xTRUMANx/SimpleSqlRunner</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
