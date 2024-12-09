@@ -11,20 +11,18 @@ namespace SimpleSqlRunner
 
         public SqlRunner(string connectionString) => ConnectionString = connectionString;
 
-        public async Task<ResultSets> RunSqlAsync(string sql, Dictionary<string, object> parameters = null, bool isSproc = false) =>
-            await RunSqlWithParametersAsync(sql, parameters?.Select(p => new SqlParameter(p.Key, p.Value)), isSproc);
-
-        public async Task<ResultSets> RunSqlWithParametersAsync(string sql, IEnumerable<SqlParameter> parameters, bool isSproc = false)
+        public async Task<ResultSets> RunSqlAsync(string sql, SqlParameter[] parameters = null, bool isSproc = false)
         {
             using (var connection = new SqlConnection(ConnectionString))
             using (var command = connection.CreateCommand())
             {
                 command.CommandText = sql;
 
-                if (isSproc) command.CommandType = System.Data.CommandType.StoredProcedure;
+                if (isSproc) 
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
 
                 if (parameters != null)
-                    command.Parameters.AddRange(parameters.ToArray());
+                    command.Parameters.AddRange(parameters);
 
                 await connection.OpenAsync();
 
