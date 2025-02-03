@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SimpleSqlRunner
@@ -11,7 +12,7 @@ namespace SimpleSqlRunner
 
         public SqlRunner(string connectionString) => ConnectionString = connectionString;
 
-        public async Task<ResultSets> RunSqlAsync(string sql, SqlParameter[] parameters = null, bool isSproc = false)
+        public async Task<ResultSets> RunSqlAsync(string sql, SqlParameter[] parameters = null, bool isSproc = false, CancellationToken? cancellationToken = null)
         {
             using (var connection = new SqlConnection(ConnectionString))
             using (var command = connection.CreateCommand())
@@ -24,9 +25,9 @@ namespace SimpleSqlRunner
                 if (parameters != null)
                     command.Parameters.AddRange(parameters);
 
-                await connection.OpenAsync();
+                await connection.OpenAsync(cancellationToken ?? CancellationToken.None);
 
-                var reader = await command.ExecuteReaderAsync();
+                var reader = await command.ExecuteReaderAsync(cancellationToken ?? CancellationToken.None);
 
                 var resultSets = new ResultSets();
 
@@ -43,7 +44,7 @@ namespace SimpleSqlRunner
                         fieldNames[i] = reader.GetName(i);
                     }
 
-                    while (reader.Read())
+                    while (await reader.ReadAsync(cancellationToken ?? CancellationToken.None))
                     {
                         var row = new Row();
 
