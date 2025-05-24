@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -50,7 +51,8 @@ namespace SimpleSqlRunner
 
                         for (int i = 0; i < reader.FieldCount; i++)
                         {
-                            row[fieldNames[i]] = reader[i];
+                            object value = reader[i];
+                            row[fieldNames[i]] = value is DBNull ? null : value;
                         }
 
                         resultSet.Add(row);
