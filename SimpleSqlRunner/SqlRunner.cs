@@ -28,9 +28,10 @@ namespace SimpleSqlRunner
 
                 await connection.OpenAsync(cancellationToken ?? CancellationToken.None);
 
-                var reader = await command.ExecuteReaderAsync(cancellationToken ?? CancellationToken.None);
-
                 var resultSets = new ResultSets();
+
+                using (var reader = await command.ExecuteReaderAsync(cancellationToken ?? CancellationToken.None))
+                {
 
                 do
                 {
@@ -59,6 +60,7 @@ namespace SimpleSqlRunner
                     }
 
                 } while (reader.NextResult());
+                }
 
                 return resultSets;
             }
