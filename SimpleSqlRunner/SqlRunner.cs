@@ -33,35 +33,35 @@ namespace SimpleSqlRunner
                 using (var reader = await command.ExecuteReaderAsync(cancellationToken ?? CancellationToken.None))
                 {
 
-                do
-                {
-                    var resultSet = new ResultSet();
-                    resultSets.Add(resultSet);
-                    var fieldNames = new string[reader.FieldCount];
-
-                    if (!reader.HasRows) continue;
-
-                    for (int i = 0; i < fieldNames.Length; i++)
+                    do
                     {
-                        fieldNames[i] = reader.GetName(i);
-                    }
+                        var resultSet = new ResultSet();
+                        resultSets.Add(resultSet);
+                        var fieldNames = new string[reader.FieldCount];
 
-                    while (await reader.ReadAsync(cancellationToken ?? CancellationToken.None))
-                    {
-                        var row = new Row();
+                        if (!reader.HasRows) continue;
 
-                        for (int i = 0; i < reader.FieldCount; i++)
+                        for (int i = 0; i < fieldNames.Length; i++)
                         {
-                            object value = reader[i];
-                            row[fieldNames[i]] = value is DBNull ? null : value;
+                            fieldNames[i] = reader.GetName(i);
                         }
 
-                        resultSet.Add(row);
-                    }
+                        while (await reader.ReadAsync(cancellationToken ?? CancellationToken.None))
+                        {
+                            var row = new Row();
 
-                } while (reader.NextResult());
+                            for (int i = 0; i < reader.FieldCount; i++)
+                            {
+                                object value = reader[i];
+                                row[fieldNames[i]] = value is DBNull ? null : value;
+                            }
+
+                            resultSet.Add(row);
+                        }
+
+                    } while (reader.NextResult());
                 }
-
+                
                 return resultSets;
             }
         }
@@ -70,11 +70,15 @@ namespace SimpleSqlRunner
     public class ResultSets : List<ResultSet> 
     {
         public object GetScalar() => this.FirstOrDefault().GetScalar();
+        
+        public Row GetFirstRow() => this.First().GetFirstRow();
     }
 
     public class ResultSet : List<Row> 
     {
         public object GetScalar() => this.FirstOrDefault()?.GetScalar();
+
+        public Row GetFirstRow() => this.Count > 0 ? this[0] : null;
     }
 
     public class Row : Dictionary<string, object> 
