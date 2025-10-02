@@ -7,7 +7,7 @@
     <Description>Opens a connection and returns result sets.</Description>
     <PackageProjectUrl>https://github.com/xTRUMANx/SimpleSqlRunner</PackageProjectUrl>
     <RepositoryUrl>https://github.com/xTRUMANx/SimpleSqlRunner</RepositoryUrl>
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
